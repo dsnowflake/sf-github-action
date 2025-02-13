@@ -43,7 +43,6 @@ jobs:
         schemachange deploy \
           --snowflake-account "${{ secrets.SNOWFLAKE_ACCOUNT }}" \
           --snowflake-user "${{ secrets.SNOWFLAKE_USER }}" \
-          --snowflake-password "${{ secrets.SNOWFLAKE_PASSWORD }}" \
           --snowflake-role "${{ secrets.SNOWFLAKE_ROLE }}" \
           --snowflake-database "${{ secrets.SNOWFLAKE_DATABASE }}" \
           --snowflake-warehouse "${{ secrets.SNOWFLAKE_WAREHOUSE }}" \
