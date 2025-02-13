@@ -1,34 +1,51 @@
-name: Snowflake Schema Change Deployment
+name: Schemachange Workflow
 
 on:
   push:
     branches:
-      - main
+      - main  # Change this to your default branch
+  pull_request:
+    branches:
+      - main  # Change this to your default branch
 
 jobs:
-  deploy:
+  run-schemachange:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.8'
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
 
-      - name: Install schemachange
-        run: |
-          python -m pip install --upgrade pip
-          pip install schemachange
+    - name: Install schemachange
+      run: pip install schemachange
 
-      - name: Run schemachange
-        env:
-          SNOWFLAKE_ACCOUNT: ${{ secrets.SF_ACCOUNT  }}
-          SNOWFLAKE_USER: ${{ secrets.SF_USERNAME }}
-          SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}
-          SNOWFLAKE_ROLE: ${{ secrets.SF_ROLE }}
-          SNOWFLAKE_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
-        run: |
-          schemachange -f ./scripts -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -r $SNOWFLAKE_ROLE -w $SNOWFLAKE_WAREHOUSE -d EXAMPLE_DB -s EXAMPLE_SCHEMA
+    - name: Configure Snowflake CLI
+      run: |
+        pip install snowflake-connector-python
+        pip install snowflake-sqlalchemy
+
+    - name: Run schemachange
+      env:
+        SNOWFLAKE_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
+        SNOWFLAKE_USER: ${{ secrets.SF_USER }}
+        SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}
+        SNOWFLAKE_ROLE: ${{ secrets.SF_ROLE }}
+        SNOWFLAKE_DATABASE: ${{ secrets.SF_DATABASE }}
+        SNOWFLAKE_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
+        SNOWFLAKE_SCHEMA: ${{ secrets.SF_SCHEMA }}
+        CHANGE_HISTORY_TABLE: ${{ secrets.CHANGE_HISTORY_TABLE }}
+      run: |
+        schemachange deploy \
+          --snowflake-account "${{ secrets.SNOWFLAKE_ACCOUNT }}" \
+          --snowflake-user "${{ secrets.SNOWFLAKE_USER }}" \
+          --snowflake-password "${{ secrets.SNOWFLAKE_PASSWORD }}" \
+          --snowflake-role "${{ secrets.SNOWFLAKE_ROLE }}" \
+          --snowflake-database "${{ secrets.SNOWFLAKE_DATABASE }}" \
+          --snowflake-warehouse "${{ secrets.SNOWFLAKE_WAREHOUSE }}" \
+          --snowflake-schema "${{ secrets.SNOWFLAKE_SCHEMA }}" \
+          --change-history-table "${{ secrets.CHANGE_HISTORY_TABLE }}"
