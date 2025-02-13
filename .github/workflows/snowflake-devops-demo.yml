@@ -41,10 +41,10 @@ jobs:
         CHANGE_HISTORY_TABLE: ${{ secrets.CHANGE_HISTORY_TABLE }}
       run: |
         schemachange deploy \
-          --snowflake-account "${{ secrets.SNOWFLAKE_ACCOUNT }}" \
-          --snowflake-user "${{ secrets.SNOWFLAKE_USER }}" \
-          --snowflake-role "${{ secrets.SNOWFLAKE_ROLE }}" \
-          --snowflake-database "${{ secrets.SNOWFLAKE_DATABASE }}" \
-          --snowflake-warehouse "${{ secrets.SNOWFLAKE_WAREHOUSE }}" \
-          --snowflake-schema "${{ secrets.SNOWFLAKE_SCHEMA }}" \
+          --snowflake-account "${{ secrets.SF_ACCOUNT }}" \
+          --snowflake-user "${{ secrets.SF_USER }}" \
+          --snowflake-role "${{ secrets.SF_ROLE }}" \
+          --snowflake-database "${{ secrets.SF_DATABASE }}" \
+          --snowflake-warehouse "${{ secrets.SF_WAREHOUSE }}" \
+          --snowflake-schema "${{ secrets.SF_SCHEMA }}" \
           --change-history-table "${{ secrets.CHANGE_HISTORY_TABLE }}"
